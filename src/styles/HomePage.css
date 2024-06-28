@@ -1,0 +1,18 @@
+.card {
+    text-align: center;
+    border-top: none !important;
+    
+}
+
+.card img {
+    width: 100%;
+    height: auto;
+    max-height: 40vh;
+    object-fit: cover;
+    object-position: center;
+}
+
+.card-body {
+    padding: 1rem;
+    background: #ededf1a4 !important;
+}
