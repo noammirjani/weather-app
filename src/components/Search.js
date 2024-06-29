@@ -1,6 +1,8 @@
 import { Button, Form, Container } from "react-bootstrap";
 import "../styles/Search.css";
 
+//TODO: add autocompelete with debounce / redux https://www.freecodecamp.org/news/deboucing-in-react-autocomplete-example/
+//TODO:implement list of the suggestion
 function Search() {
   function onSubmitSearch(e) {
     e.preventDefault();
