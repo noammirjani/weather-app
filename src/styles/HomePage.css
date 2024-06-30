@@ -2,6 +2,8 @@
   min-width: 20rem;
   text-align: center;
   border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
 }
 
 .card img {
