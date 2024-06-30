@@ -5,12 +5,70 @@ import axios from "axios";
 //todo: handle errors correctly
 //todo: add costume hook for fetching data
 function weatherApi() {
-  // - not working
-  const weatherApiKey = "AnwT0RJSDryStGIcCstenYaAuhSxnBHO";
+  const weatherApiKey = process.env.REACT_APP_WEATHER_API_KEY;
+
+  const currentWeatherUrl =
+    "http://dataservice.accuweather.com/currentconditions/v1/";
   const forecastUrl =
     "http://dataservice.accuweather.com/forecasts/v1/daily/5day/";
   const locationUrl =
     "http://dataservice.accuweather.com/locations/v1/cities/autocomplete?";
+
+  const fetchCurrentWeather = async (locationKey, metric = true) => {
+    const addToUrl = `?apikey=${weatherApiKey}&details=true&metric=${metric}`;
+
+    const extractCurrentWeatherData = (data, unit = "metric") => ({
+      temp:
+        unit === "metric"
+          ? data.Temperature.Metric.Value
+          : data.Temperature.Imperial.Value,
+      tempUnit: unit === "metric" ? "C" : "F",
+      description: data.WeatherText,
+      icon: `https://developer.accuweather.com/sites/default/files/${
+        data.WeatherIcon < 10 ? "0" + data.WeatherIcon : data.WeatherIcon
+      }-s.png`,
+      feelsLike:
+        unit === "metric"
+          ? data.RealFeelTemperature.Metric.Value
+          : data.RealFeelTemperature.Imperial.Value,
+      humidity: data.RelativeHumidity,
+      wind:
+        unit === "metric"
+          ? data.Wind.Speed.Metric.Value
+          : data.Wind.Speed.Imperial.Value,
+      windUnit: unit === "metric" ? "km/h" : "mi/h",
+      uvIndex: data.UVIndex,
+      uvIndexText: data.UVIndexText,
+      visibility:
+        unit === "metric"
+          ? data.Visibility.Metric.Value
+          : data.Visibility.Imperial.Value,
+      visibilityUnit: unit === "metric" ? "km" : "mi",
+      pressure:
+        unit === "metric"
+          ? data.Pressure.Metric.Value
+          : data.Pressure.Imperial.Value,
+      pressureUnit: unit === "metric" ? "mb" : "inHg",
+      localTime: data.LocalObservationDateTime.split("T")[0],
+      isDayTime: data.IsDayTime,
+    });
+
+    try {
+      const response = await axios.get(
+        `${currentWeatherUrl}${locationKey}${addToUrl}`
+      );
+
+      if (response?.data?.length > 0) {
+        return extractCurrentWeatherData(response.data[0]);
+      }
+
+      console.error("no data");
+      return null;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  };
 
   const fetchForecast = async (locationKey, metric = true) => {
     const addToUrl = `?apikey=${weatherApiKey}&metric=${metric}&details=false`;
@@ -74,6 +132,7 @@ function weatherApi() {
   return {
     fetchAutoCompleteLocation,
     fetchForecast,
+    fetchCurrentWeather,
   };
 }
 

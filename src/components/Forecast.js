@@ -52,7 +52,7 @@ function Forecast({ locationData }) {
   }
 
   return (
-    <Container className="mt-5 p-5 forecast-body ">
+    <Container className="mt-5 mb-5 p-5 forecast-body ">
       <Row className="horizontal-scroll">
         {forecast && forecast.map((day) => createCard(day))}
         {/* {!forecast && <div>No forecast data</div>} */}
