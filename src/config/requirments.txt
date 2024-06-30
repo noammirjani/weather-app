@@ -1,0 +1,3 @@
+npm install react-bootstrap bootstrap
+npm i bootstrap-icons
+npm install dotenv --save
