@@ -1,0 +1,22 @@
+.custom-dropdown {
+  width: 60%;
+  min-width: 10rem;
+  color: #212529;
+  /* text-align: left; */
+  text-align: center;
+
+  overflow-y: auto;
+  max-height: 200px;
+  cursor: "pointer";
+}
+
+.custom-dropdown .dropdown-item {
+  text-align: center;
+  color: black;
+}
+
+.custom-dropdown .dropdown-item:active,
+.custom-dropdown .dropdown-item:focus {
+  background-color: #e9f3fe;
+  color: black;
+}
