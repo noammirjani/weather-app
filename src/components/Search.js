@@ -1,38 +1,32 @@
-import { Button, Form, Container, Dropdown } from "react-bootstrap";
-import { useEffect, useState } from "react";
-// import useDebounce from "./useDebounce";
+import { Button, Form, Container } from "react-bootstrap";
+import { useState } from "react";
+import useDebounce from "./useDebounce";
+import AutocompleteSearch from "./AutocompleteSearch";
 import "../styles/Search.css";
 
-//TODO: add autocomplete with debounce / redux https://www.freecodecamp.org/news/deboucing-in-react-autocomplete-example/
-//TODO:implement list of the suggestion
-function Search() {
+function Search({ setLocationData }) {
   const [query, setQuery] = useState("");
-  // const debouncedSearchResult = useDebounce(searchValue, 500);
-
-  // useEffect(() => {
-  //   console.log(debouncedSearchResult);
-  // }, [debouncedSearchResult]);
-
-  // function OnChangeSearch(e) {
-  //   setSearchValue(e.target.value);
-  // }
+  const searchSuggestions = useDebounce(query, 500);
 
   function handleInputChange(e) {
     setQuery(e.target.value);
   }
 
-  function handleSuggestionClick(city) {
-    console.log("chosen city: ", city);
+  function handleClickSuggestions(e) {
+    e.preventDefault();
+    setLocationData({
+      city: e.target.getAttribute("data-city"),
+      country: e.target.getAttribute("data-country"),
+      key: e.target.getAttribute("data-key"),
+    });
+
+    setQuery("");
   }
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    const location = e.target[0].value.trim().lowerCase();
-    if (!location) return;
-
-    //extract from the list the location key + city + country
-    // set this as a state from home component
+    if (!query) return;
   }
 
   return (
@@ -61,40 +55,14 @@ function Search() {
               </svg>
             </Button>
           </div>
-          {query && (
-            <Dropdown.Menu show className="w-75 text-center position-absolute">
-              <Dropdown.Item
-                href="#/action-1"
-                onClick={() => handleSuggestionClick("Tel Aviv")}
-              >
-                Tel Aviv
-              </Dropdown.Item>
-              <Dropdown.Item
-                href="#/action-2"
-                onClick={() => handleSuggestionClick("New York")}
-              >
-                New York
-              </Dropdown.Item>
-              <Dropdown.Item
-                href="#/action-3"
-                onClick={() => handleSuggestionClick("London")}
-              >
-                London
-              </Dropdown.Item>
-              <Dropdown.Item
-                href="#/action-4"
-                onClick={() => handleSuggestionClick("Paris")}
-              >
-                Paris
-              </Dropdown.Item>
-              <Dropdown.Item
-                href="#/action-5"
-                onClick={() => handleSuggestionClick("Berlin")}
-              >
-                Berlin
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          )}
+          <div className="d-flex justify-content-center">
+            {query && (
+              <AutocompleteSearch
+                searchSuggestions={searchSuggestions}
+                handleClickSuggestions={handleClickSuggestions}
+              />
+            )}
+          </div>
         </Container>
       </Form.Group>
     </Form>
