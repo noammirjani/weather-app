@@ -6,11 +6,11 @@ function Icon({ color, size, svgData, style }) {
       width={size}
       height={size}
       fill={color || "currentColor"}
-      class={className}
+      className={className}
       viewBox={`0 0 ${size} ${size}`}
       style={style}
     >
-      <path fill-rule="evenodd" d={path} />
+      <path fillRule="evenodd" d={path} />
     </svg>
   );
 }
