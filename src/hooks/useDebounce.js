@@ -1,5 +1,5 @@
 import { debounce } from "lodash";
-import api from "../config/api";
+import WeatherApi from "../services/weatherService";
 import { useEffect, useState } from "react";
 
 function useDebounce(value, delay) {
@@ -8,7 +8,7 @@ function useDebounce(value, delay) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api().fetchAutoCompleteLocation(value);
+        const response = await WeatherApi().fetchAutoCompleteLocation(value);
         setCitiesSearch(response);
       } catch (e) {
         throw e;
