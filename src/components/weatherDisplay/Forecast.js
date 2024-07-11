@@ -1,7 +1,7 @@
-import { Container, Row, Col, Image } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import api from "../config/api";
-import "../styles/Forecast.css";
+import { Container, Row, Col, Image } from "react-bootstrap";
+import WeatherApi from "../../services/weatherService";
+import "../../styles/Forecast.css";
 
 function Forecast({ locationData }) {
   const [forecast, setForecast] = useState(null);
@@ -9,7 +9,7 @@ function Forecast({ locationData }) {
   useEffect(() => {
     const fetchData = async () => {
       if (!locationData.key) return;
-      const data = await api().fetchForecast(locationData.key);
+      const data = await WeatherApi().fetchForecast(locationData.key);
       setForecast(data);
     };
     fetchData();
@@ -52,7 +52,7 @@ function Forecast({ locationData }) {
   }
 
   return (
-    <Container className="mt-5 p-5 forecast-body ">
+    <Container className="mt-5 mb-5 p-5 forecast-body ">
       <Row className="horizontal-scroll">
         {forecast && forecast.map((day) => createCard(day))}
         {/* {!forecast && <div>No forecast data</div>} */}

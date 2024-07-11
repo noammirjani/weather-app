@@ -1,4 +1,9 @@
 import axios from "axios";
+import {
+  extractCurrentWeatherData,
+  extractForecastData,
+  extractData,
+} from "../utils/weatherDataParser";
 
 //todo: change folder name to services
 //todo: change file name to weatherApi.js
@@ -16,42 +21,6 @@ function weatherApi() {
 
   const fetchCurrentWeather = async (locationKey, metric = true) => {
     const addToUrl = `?apikey=${weatherApiKey}&details=true&metric=${metric}`;
-
-    const extractCurrentWeatherData = (data, unit = "metric") => ({
-      temp:
-        unit === "metric"
-          ? data.Temperature.Metric.Value
-          : data.Temperature.Imperial.Value,
-      tempUnit: unit === "metric" ? "C" : "F",
-      description: data.WeatherText,
-      icon: `https://developer.accuweather.com/sites/default/files/${
-        data.WeatherIcon < 10 ? "0" + data.WeatherIcon : data.WeatherIcon
-      }-s.png`,
-      feelsLike:
-        unit === "metric"
-          ? data.RealFeelTemperature.Metric.Value
-          : data.RealFeelTemperature.Imperial.Value,
-      humidity: data.RelativeHumidity,
-      wind:
-        unit === "metric"
-          ? data.Wind.Speed.Metric.Value
-          : data.Wind.Speed.Imperial.Value,
-      windUnit: unit === "metric" ? "km/h" : "mi/h",
-      uvIndex: data.UVIndex,
-      uvIndexText: data.UVIndexText,
-      visibility:
-        unit === "metric"
-          ? data.Visibility.Metric.Value
-          : data.Visibility.Imperial.Value,
-      visibilityUnit: unit === "metric" ? "km" : "mi",
-      pressure:
-        unit === "metric"
-          ? data.Pressure.Metric.Value
-          : data.Pressure.Imperial.Value,
-      pressureUnit: unit === "metric" ? "mb" : "inHg",
-      localTime: data.LocalObservationDateTime.split("T")[0],
-      isDayTime: data.IsDayTime,
-    });
 
     try {
       const response = await axios.get(
@@ -72,15 +41,6 @@ function weatherApi() {
 
   const fetchForecast = async (locationKey, metric = true) => {
     const addToUrl = `?apikey=${weatherApiKey}&metric=${metric}&details=false`;
-
-    const extractForecastData = (dayData) => ({
-      date: dayData.Date.split("T")[0],
-      minTemp: Math.floor(dayData.Temperature.Minimum.Value),
-      maxTemp: Math.floor(dayData.Temperature.Maximum.Value),
-      description: dayData.Day.IconPhrase,
-      unit: dayData.Temperature.Maximum.Unit,
-      icon: `https://developer.accuweather.com/sites/default/files/0${dayData.Day.Icon}-s.png`,
-    });
 
     try {
       const response = await axios.get(
@@ -103,15 +63,6 @@ function weatherApi() {
 
   const fetchAutoCompleteLocation = async (city) => {
     const url = `${locationUrl}q=${city}&apikey=${weatherApiKey}`;
-    const extractData = (data) => {
-      return data.map((item) => {
-        return {
-          key: item.Key,
-          city: item.LocalizedName,
-          country: item.Country.LocalizedName,
-        };
-      });
-    };
 
     if (!city) return null;
 

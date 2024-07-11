@@ -1,27 +1,27 @@
-import { Card, Container } from "react-bootstrap";
-import Search from "../Search";
 import { useState } from "react";
-import Forecast from "../Forecast";
-import CurrentWeather from "../CurrentWeather";
-
-import "bootstrap/dist/css/bootstrap.min.css";
+import { Row } from "react-bootstrap";
+import Layout from "../layout/Layout";
+import Search from "../search/Search";
+import CurrentWeather from "../weatherDisplay/CurrentWeather";
+import Forecast from "../weatherDisplay/Forecast";
+import FavoriteButton from "../utils/FavoriteButton";
 import "../../styles/HomePage.css";
 
-//todo: add button to switch between C and F
-//todo: add favorite button
-//todo: add search history /favorite list
 function HomePage() {
   const [locationData, setLocationData] = useState(null);
 
   return (
     <>
-      <Card>
-        <Card.Img variant="top" src="assets/images/clouds.jpg" />
-        <Card.Body>
+      <Layout>
+        <Row>
           <Search setLocationData={setLocationData} />
-        </Card.Body>
-      </Card>
-
+        </Row>
+        {locationData && (
+          <Row>
+            <FavoriteButton locationData={locationData} />
+          </Row>
+        )}
+      </Layout>
       {locationData && (
         <>
           <CurrentWeather locationData={locationData} />

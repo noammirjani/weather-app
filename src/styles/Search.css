@@ -1,6 +1,24 @@
+.group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-container {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 100% !important;
+}
+
+@media (min-width: 576px) {
+  .search-container {
+    width: 60% !important;
+  }
+}
+
 .form-control {
-  max-width: 65%;
   text-align: center;
+
   border-right: none !important;
   border-radius: 50px 0 0 50px !important;
 }

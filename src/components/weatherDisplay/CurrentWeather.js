@@ -1,7 +1,7 @@
-import "../styles/CurrentWeather.css";
 import { useState, useEffect } from "react";
-import api from "../config/api";
 import { Container, Row, Col, ListGroup } from "react-bootstrap";
+import WeatherApi from "../../services/weatherService";
+import "../../styles/CurrentWeather.css";
 
 function CurrentWeather({ locationData }) {
   const [currentData, setCurrentData] = useState(null);
@@ -9,7 +9,7 @@ function CurrentWeather({ locationData }) {
   useEffect(() => {
     const fetchData = async () => {
       if (!locationData.key) return;
-      const data = await api().fetchCurrentWeather(locationData.key);
+      const data = await WeatherApi().fetchCurrentWeather(locationData.key);
       setCurrentData(data);
     };
     fetchData();
@@ -32,10 +32,6 @@ function CurrentWeather({ locationData }) {
             <p className="fs-4">{currentData.localTime}</p>
             {/* <p className="fs-4">{getLocalTime()}</p> */}
             <p className="fs-4">{currentData.isDayTime ? "Day" : "Night"}</p>
-            <div className="location-image text-center d-none ">
-              {/*d-md-block */}
-              {/* Placeholder for location image */}
-            </div>
           </div>
         </Col>
 
