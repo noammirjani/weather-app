@@ -7,9 +7,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />}>
-          <Route path="*" element={<NoPage />} />
           <Route path="weather-app" element={<HomePage />} />
         </Route>
+        <Route path="*" element={<NoPage />} />
       </Routes>
     </BrowserRouter>
   );

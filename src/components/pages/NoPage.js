@@ -1,8 +1,8 @@
 import { Alert, Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "../../styles/NoPage.css";
-import { searchSvg, favoriteSvg } from "../../svgPath";
-import Icon from "../Icon";
+import { searchSvg, favoriteSvg } from "../../utils/svgPath";
+import Icon from "../utils/Icon";
 
 function NoPage() {
   return (
@@ -15,8 +15,8 @@ function NoPage() {
         Please try again... or Check out some of our favorite areas of the site.
       </Alert>
 
-      <Row>
-        <Col>
+      <Row className="no-page-row">
+        <Col className="no-page-col">
           <Link to="/weather-app">
             search weather
             <Icon
@@ -26,7 +26,7 @@ function NoPage() {
             />
           </Link>
         </Col>
-        <Col>
+        <Col className="no-page-col">
           <Link to="/favorites">
             see favorites
             <Icon
