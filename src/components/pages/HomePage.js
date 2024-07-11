@@ -1,23 +1,35 @@
-import { Card, Container } from "react-bootstrap";
-import Search from "../Search";
 import { useState } from "react";
-import Forecast from "../Forecast";
+import Layout from "../layout/Layout";
+import Search from "../search/Search";
+import CurrentWeather from "../weatherDisplay/CurrentWeather";
+import Forecast from "../weatherDisplay/Forecast";
 
-import "bootstrap/dist/css/bootstrap.min.css";
 import "../../styles/HomePage.css";
+import FavoriteButton from "../utils/FavoriteButton";
+import { Row } from "react-bootstrap";
 
 function HomePage() {
   const [locationData, setLocationData] = useState(null);
 
   return (
     <>
-      <Card>
-        <Card.Img variant="top" src="assets/images/clouds.jpg" />
-        <Card.Body>
+      <Layout>
+        <Row>
           <Search setLocationData={setLocationData} />
-        </Card.Body>
-      </Card>
-      {locationData && <Forecast locationData={locationData} />}
+        </Row>
+        {locationData && (
+          <Row>
+            <FavoriteButton locationData={locationData} />
+          </Row>
+        )}
+      </Layout>
+
+      {locationData && (
+        <>
+          <CurrentWeather locationData={locationData} />
+          <Forecast locationData={locationData} />
+        </>
+      )}
     </>
   );
 }
