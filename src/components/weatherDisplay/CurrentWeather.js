@@ -1,22 +1,22 @@
-import { useState, useEffect } from "react";
-import { Container, Row, Col, ListGroup } from "react-bootstrap";
-import WeatherApi from "../../services/weatherService";
+import { Container, Row, Col, ListGroup, Alert } from "react-bootstrap";
+import WeatherApiService from "../../services/weatherService";
+import useFetch from "../../hooks/useFetch";
 import "../../styles/CurrentWeather.css";
 
 function CurrentWeather({ locationData }) {
-  const [currentData, setCurrentData] = useState(null);
+  const handler = WeatherApiService().currentWeather(locationData.key);
+  const { data: currentData, isPending, error } = useFetch(handler);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!locationData.key) return;
-      const data = await WeatherApi().fetchCurrentWeather(locationData.key);
-      setCurrentData(data);
-    };
-    fetchData();
-  }, [locationData.key]);
+  if (isPending) {
+    return <div>Loading...</div>;
+  }
 
   if (!currentData) {
-    return <div>Loading...</div>;
+    //
+  }
+
+  if (error) {
+    return <Alert variant="danger">{error}</Alert>;
   }
 
   return (
@@ -81,6 +81,11 @@ function CurrentWeather({ locationData }) {
 }
 
 export default CurrentWeather;
+// useEffect(() => {
+//   if (!locationData.key) return;
+//   const handler = WeatherApiService().fetchCurrentWeather(locationData.key);
+//   setFetchHandler(handler.url);
+// }, [locationData.key]);
 
 // function getLocalTime(
 //   timestamp = "2024-07-01T01:17:00+03:00",

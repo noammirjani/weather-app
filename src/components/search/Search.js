@@ -8,20 +8,14 @@ import "../../styles/Search.css";
 
 function Search({ setLocationData }) {
   const [query, setQuery] = useState("");
-  const searchSuggestions = useDebounce(query, 500);
+  const { searchSuggestions, isPending, error } = useDebounce(query, 500);
 
   function handleInputChange(e) {
     setQuery(e.target.value);
   }
 
-  function handleClickSuggestions(e) {
-    e.preventDefault();
-    setLocationData({
-      city: e.target.getAttribute("data-city"),
-      country: e.target.getAttribute("data-country"),
-      key: e.target.getAttribute("data-key"),
-    });
-
+  function handleClickSuggestions(locationData) {
+    setLocationData(locationData);
     setQuery("");
   }
 

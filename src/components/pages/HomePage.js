@@ -10,11 +10,16 @@ import "../../styles/HomePage.css";
 function HomePage() {
   const [locationData, setLocationData] = useState(null);
 
+  const handleLocationData = (location) => {
+    if (!location || !location.key) return;
+    setLocationData(location);
+  };
+
   return (
     <>
       <Layout>
         <Row>
-          <Search setLocationData={setLocationData} />
+          <Search setLocationData={handleLocationData} />
         </Row>
         {locationData && (
           <Row>
