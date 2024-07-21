@@ -9,8 +9,7 @@ function useDebounce(value, delay) {
   useEffect(() => {
     const fetchCities = debounce(() => {
       if (value) {
-        const h = WeatherApiService().autoCompleteLocation(value);
-        setHandler(h);
+        setHandler(WeatherApiService().autoCompleteLocation(value));
       }
     }, delay);
 
@@ -21,9 +20,9 @@ function useDebounce(value, delay) {
     };
   }, [value, delay]);
 
-  const { data: searchSuggestions, isPending, error } = useFetch(handler || {});
+  const { data: searchSuggestions, isLoading, error } = useFetch(handler || {});
 
-  return { searchSuggestions, isPending, error };
+  return { searchSuggestions, isLoading, error };
 }
 
 export default useDebounce;

@@ -7,6 +7,10 @@ function Forecast({ locationData }) {
   const handler = WeatherApiService().forecast(locationData.key);
   const { data: forecast, isPending, error } = useFetch(handler);
 
+  if (!forecast || !locationData || !locationData.key) {
+    return;
+  }
+
   const dayName = (dateString) => {
     const days = [
       "Sunday",

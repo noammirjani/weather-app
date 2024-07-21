@@ -7,6 +7,10 @@ function CurrentWeather({ locationData }) {
   const handler = WeatherApiService().currentWeather(locationData.key);
   const { data: currentData, isPending, error } = useFetch(handler);
 
+  if (!currentData || !locationData || !locationData.key) {
+    return;
+  }
+
   if (isPending) {
     return <div>Loading...</div>;
   }
@@ -81,11 +85,6 @@ function CurrentWeather({ locationData }) {
 }
 
 export default CurrentWeather;
-// useEffect(() => {
-//   if (!locationData.key) return;
-//   const handler = WeatherApiService().fetchCurrentWeather(locationData.key);
-//   setFetchHandler(handler.url);
-// }, [locationData.key]);
 
 // function getLocalTime(
 //   timestamp = "2024-07-01T01:17:00+03:00",

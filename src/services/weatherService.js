@@ -5,8 +5,7 @@ import {
 } from "../utils/weatherDataParser";
 
 function WeatherApiService() {
-  // const weatherApiKey = process.env.REACT_APP_WEATHER_API_KEY;
-  const weatherApiKey = "NVk9XfNozshEZMJbJ0fVzp8BsRoKEAFc";
+  const weatherApiKey = process.env.REACT_APP_WEATHER_API_KEY;
 
   const currentWeatherUrl =
     "http://dataservice.accuweather.com/currentconditions/v1/";
@@ -19,6 +18,7 @@ function WeatherApiService() {
     const addToUrl = `?apikey=${weatherApiKey}&details=true&metric=${metric}`;
     return {
       url: `${currentWeatherUrl}${locationKey}${addToUrl}`,
+      queryType: "current-weather",
       urlValidation: locationKey && weatherApiKey ? true : false,
       dataHandler: extractCurrentWeatherData,
     };
@@ -28,6 +28,7 @@ function WeatherApiService() {
     const addToUrl = `?apikey=${weatherApiKey}&metric=${metric}&details=false`;
     return {
       url: `${forecastUrl}${locationKey}${addToUrl}`,
+      queryType: "forecast-5days",
       urlValidation: locationKey && weatherApiKey ? true : false,
       dataHandler: extractForecastData,
     };
@@ -36,6 +37,7 @@ function WeatherApiService() {
   const autoCompleteLocation = (city) => {
     return {
       url: `${locationUrl}q=${city}&apikey=${weatherApiKey}`,
+      queryType: "auto-complete-location",
       urlValidation: city && weatherApiKey ? true : false,
       dataHandler: extractLocationData,
     };

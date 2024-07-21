@@ -8,7 +8,7 @@ import "../../styles/Search.css";
 
 function Search({ setLocationData }) {
   const [query, setQuery] = useState("");
-  const { searchSuggestions, isPending, error } = useDebounce(query, 500);
+  const { searchSuggestions, isLoading, error } = useDebounce(query, 500);
 
   function handleInputChange(e) {
     setQuery(e.target.value);
@@ -38,7 +38,7 @@ function Search({ setLocationData }) {
           <Button className="submitButton">
             <Icon size="20" svgData={searchSvg} />
           </Button>
-          {query && (
+          {query && searchSuggestions && (
             <Autocomplete
               searchSuggestions={searchSuggestions}
               handleClickSuggestions={handleClickSuggestions}

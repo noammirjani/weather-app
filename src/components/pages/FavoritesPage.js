@@ -11,10 +11,10 @@ function FavoritesPage() {
   );
 
   const searchWeather = (locationData) => {
-    console.log("search", locationData);
+    // console.log("search", locationData);
   };
 
-  console.log(filterFavorites);
+  // console.log(filterFavorites);
 
   return (
     <>

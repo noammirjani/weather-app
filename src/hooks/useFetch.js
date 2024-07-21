@@ -1,48 +1,29 @@
-import { useState, useEffect } from "react";
+import { useQuery } from "react-query";
 import axios from "axios";
 
 function useFetch(handler) {
-  const [data, setData] = useState([]);
-  const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState(null);
-
-  const setResponse = (data, error) => {
-    setData(data);
-    setError(error);
-  };
-
-  useEffect(() => {
-    if (!handler || !handler.url) return;
-
-    if (!handler.urlValidation) {
-      setResponse(null, "Invalid URL or API key");
+  const fetchData = async () => {
+    if (!handler || !handler.url) {
+      // throw new Error("URL is required");
       return;
     }
+    if (!handler.urlValidation) {
+      throw new Error("URL validation function is required");
+    }
+    const response = await axios.get(handler.url);
+    if (!response?.data) {
+      throw new Error("Response structure is wrong, try again");
+    }
+    let responseData = response.data;
+    if (!responseData) {
+      throw new Error("No data was found for the chosen key");
+    }
+    return handler.dataHandler(responseData);
+  };
 
-    const fetchData = async () => {
-      setIsPending(true);
-      try {
-        const response = await axios.get(handler.url);
-        if (!response?.data) {
-          throw new Error("Response structure is wrong, try again");
-        }
-        const responseData = response.data;
-        if (!responseData) {
-          throw new Error("No data was found for the chosen key");
-        }
-        const data = handler.dataHandler(responseData);
-        setResponse(data, null);
-      } catch (error) {
-        setResponse(null, error.message);
-      } finally {
-        setIsPending(false);
-      }
-    };
-
-    fetchData();
-  }, [handler.url]);
-
-  return { data, isPending, error };
+  const queryKey = handler?.url || "data";
+  const { data, isLoading, error } = useQuery(queryKey, fetchData);
+  return { data, isLoading, error };
 }
 
 export default useFetch;
