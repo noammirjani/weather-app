@@ -1,0 +1,29 @@
+.favorites-container {
+  margin-top: 20px;
+}
+
+.no-favorites {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.favorite-card {
+  border: 1px solid #f80808;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.favorite-card h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.favorite-card p {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.favorite-card button {
+  margin-top: 10px;
+}
