@@ -1,0 +1,10 @@
+.dropdown-menu :active {
+  background-color: transparent;
+  color: rgb(44, 44, 44);
+}
+
+.dropdown-menu {
+  right: 0;
+  left: auto;
+  font-size: small;
+}
