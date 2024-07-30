@@ -1,5 +1,20 @@
 const iconUrlBase = "https://developer.accuweather.com/sites/default/files";
 
+export const extractGeoPositionData = (responseData) => {
+  const data = responseData;
+
+  const correctCountry =
+    data.Country.LocalizedName === "Palestine"
+      ? "Israel"
+      : data.Country.LocalizedName;
+
+  return {
+    key: data.Key,
+    city: data.ParentCity.LocalizedName || data.LocalizedName,
+    country: correctCountry,
+  };
+};
+
 export const extractLocationData = (responseData) => {
   const extract = (item) => ({
     key: item.Key,

@@ -2,6 +2,7 @@ import {
   extractCurrentWeatherData,
   extractForecastData,
   extractLocationData,
+  extractGeoPositionData,
 } from "../utils/weatherDataParser";
 
 function WeatherApiService() {
@@ -12,34 +13,56 @@ function WeatherApiService() {
   const forecastUrl =
     "http://dataservice.accuweather.com/forecasts/v1/daily/5day/";
   const locationUrl =
-    "http://dataservice.accuweather.com/locations/v1/cities/autocomplete?";
+    "http://dataservice.accuweather.com/locations/v1/cities/autocomplete";
+  const geoPositionUrl =
+    "http://dataservice.accuweather.com/locations/v1/cities/geoposition/search";
+
+  const isValidUrl = (...args) => args.every(Boolean);
 
   const currentWeather = (locationKey, metric = true) => {
-    const addToUrl = `?apikey=${weatherApiKey}&details=true&metric=${metric}`;
+    const url = `${currentWeatherUrl}${locationKey}?apikey=${weatherApiKey}&details=true&metric=${metric}`;
     return {
-      url: `${currentWeatherUrl}${locationKey}${addToUrl}`,
+      url: url,
       queryType: "current-weather",
-      urlValidation: locationKey && weatherApiKey ? true : false,
+      queryKey: url,
+      urlValidation: isValidUrl(locationKey, weatherApiKey),
       dataHandler: extractCurrentWeatherData,
     };
   };
 
   const forecast = (locationKey, metric = true) => {
-    const addToUrl = `?apikey=${weatherApiKey}&metric=${metric}&details=false`;
+    const url = `${forecastUrl}${locationKey}?apikey=${weatherApiKey}&details=true&metric=${metric}`;
     return {
-      url: `${forecastUrl}${locationKey}${addToUrl}`,
+      url: url,
       queryType: "forecast-5days",
-      urlValidation: locationKey && weatherApiKey ? true : false,
+      queryKey: url,
+      urlValidation: isValidUrl(locationKey, weatherApiKey),
       dataHandler: extractForecastData,
     };
   };
 
   const autoCompleteLocation = (city) => {
     return {
-      url: `${locationUrl}q=${city}&apikey=${weatherApiKey}`,
+      url: `${locationUrl}?apikey=${weatherApiKey}&q=${city}`,
       queryType: "auto-complete-location",
-      urlValidation: city && weatherApiKey ? true : false,
+      queryKey: city,
+      urlValidation: isValidUrl(city, weatherApiKey),
       dataHandler: extractLocationData,
+    };
+  };
+
+  const getCityByCoords = (coords) => {
+    return {
+      url: `${geoPositionUrl}?apikey=${weatherApiKey}&q=${coords.latitude},${coords.longitude}`,
+      queryType: "geo-position-search",
+      queryKey: "geo-position-search",
+      urlValidation: isValidUrl(
+        coords,
+        coords.latitude,
+        coords.longitude,
+        weatherApiKey
+      ),
+      dataHandler: extractGeoPositionData,
     };
   };
 
@@ -47,7 +70,18 @@ function WeatherApiService() {
     autoCompleteLocation,
     forecast,
     currentWeather,
+    getCityByCoords,
   };
 }
 
 export default WeatherApiService;
+
+//e
+// :
+// "400"
+// Message
+// :
+// "LocationKey is invalid: 57465$"
+// Reference
+// :
+// "/forecasts/v1/daily/5day/57465$"

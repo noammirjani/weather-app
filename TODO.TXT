@@ -1,8 +1,7 @@
-1. change the Thermometer to be more realistic 
-2. change the context to redux 
-3. change the local storage to server with db 
-4. add formal folders in the client
-5. add option to change the type of the temperatures 
-6. add toggle to dark anf bright mode 
-7. change the api calls to costume hook 
-8. add more functionality to the current weather
+
+2. add functionality for changing the temperatures units
+2. add functionality for changing the dark mode 
+    --- maybe use for that redux 
+4. change the home page visually
+
+7. add README file
