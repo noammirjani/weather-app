@@ -23,6 +23,13 @@ function Search({ setLocationData }) {
     e.preventDefault();
 
     if (!query) return;
+
+    if (query.toLowerCase() === searchSuggestions?.[0]?.city.toLowerCase()) {
+      handleClickSuggestions(searchSuggestions[0]);
+    } else {
+      setLocationData({ city: query });
+      setQuery("");
+    }
   }
 
   return (
@@ -35,7 +42,7 @@ function Search({ setLocationData }) {
             value={query}
             onChange={handleInputChange}
           />
-          <Button className="submitButton">
+          <Button className="submitButton" type="submit">
             <Icon size="20" svgData={searchSvg} />
           </Button>
           {query && searchSuggestions && (
