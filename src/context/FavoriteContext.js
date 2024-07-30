@@ -26,7 +26,7 @@ function FavoritesProvider({ children }) {
   };
 
   const isFave = (locationID) => {
-    return !!favorites[locationID];
+    return favorites?.[locationID]?.display || false;
   };
 
   return (
