@@ -3,24 +3,20 @@ import WeatherApiService from "../../services/weatherService";
 import useFetch from "../../hooks/useFetch";
 import "../../styles/CurrentWeather.css";
 
-function CurrentWeather({ locationData }) {
+function CurrentWeather({ locationData, handleFetchError }) {
   const handler = WeatherApiService().currentWeather(locationData.key);
-  const { data: currentData, isPending, error } = useFetch(handler);
+  const { data: currentData, error } = useFetch(handler);
 
   if (!currentData || !locationData || !locationData.key) {
     return;
   }
-
-  if (isPending) {
-    return <div>Loading...</div>;
-  }
-
   if (!currentData) {
-    //
+    handleFetchError("No data found");
+    return;
   }
-
   if (error) {
-    return <Alert variant="danger">{error}</Alert>;
+    handleFetchError(error);
+    return;
   }
 
   return (

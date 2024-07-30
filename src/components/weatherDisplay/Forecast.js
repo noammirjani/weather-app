@@ -3,11 +3,19 @@ import WeatherApiService from "../../services/weatherService";
 import useFetch from "../../hooks/useFetch";
 import "../../styles/Forecast.css";
 
-function Forecast({ locationData }) {
+function Forecast({ locationData, handleFetchError }) {
   const handler = WeatherApiService().forecast(locationData.key);
-  const { data: forecast, isPending, error } = useFetch(handler);
+  const { data: forecast, error } = useFetch(handler);
 
   if (!forecast || !locationData || !locationData.key) {
+    return;
+  }
+  if (!forecast) {
+    handleFetchError("No forecast data found");
+    return;
+  }
+  if (error) {
+    handleFetchError(error);
     return;
   }
 
@@ -40,18 +48,6 @@ function Forecast({ locationData }) {
       <div className="weather-date">{day.date.split("-")[2]}</div>
     </Col>
   );
-
-  if (isPending) {
-    return <div>Loading...</div>;
-  }
-
-  if (!forecast) {
-    //
-  }
-
-  if (error) {
-    return <Alert variant="danger">{error}</Alert>;
-  }
 
   return (
     <Container className="mt-5 mb-5 p-5 forecast-body ">

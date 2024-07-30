@@ -45,8 +45,14 @@ function HomePage() {
 
   const displayWeather = (
     <>
-      <CurrentWeather locationData={locationData} />
-      <Forecast locationData={locationData} />
+      <CurrentWeather
+        locationData={locationData}
+        handleFetchError={handleFetchError}
+      />
+      <Forecast
+        locationData={locationData}
+        handleFetchError={handleFetchError}
+      />
     </>
   );
 
