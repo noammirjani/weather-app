@@ -16,8 +16,8 @@
   margin: 5px 0;
 }
 
-.weather-icon {
-  width: 50px;
+.basic-weather-icon {
+  width: 100px;
   height: auto;
 }
 
@@ -47,4 +47,13 @@
 
 .favorite-card button {
   margin-top: 10px;
+}
+
+.search-button {
+  margin-right: 0.5rem;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: center;
 }

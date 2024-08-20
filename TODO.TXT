@@ -1,7 +1,7 @@
 
-2. add functionality for changing the temperatures units
+1. add functionality for changing the temperatures units
 2. add functionality for changing the dark mode 
     --- maybe use for that redux 
-4. change the home page visually
+3. change the home page visually
 
 7. add README file

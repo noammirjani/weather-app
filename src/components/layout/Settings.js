@@ -1,18 +1,9 @@
-import React, { useState } from "react";
 import { Dropdown, NavItem, NavLink, Form } from "react-bootstrap";
+import useSettings from "../../hooks/useSettings";
 import "../../styles/Settings.css";
 
 function Settings() {
-  const [temperatureUnit, setTemperatureUnit] = useState("C");
-  const [darkMode, setDarkMode] = useState(false);
-
-  const handleTemperatureUnitChange = () => {
-    setTemperatureUnit((prevUnit) => (prevUnit === "C" ? "F" : "C"));
-  };
-
-  const handleDarkModeChange = () => {
-    setDarkMode((prevMode) => !prevMode);
-  };
+  const { unit, setUnit, mode, setMode } = useSettings();
 
   const DropdownItem = ({ id, label, checked, onChange }) => (
     <Dropdown.Item onClick={(e) => e.stopPropagation()}>
@@ -34,15 +25,15 @@ function Settings() {
       <Dropdown.Menu>
         <DropdownItem
           id="temperature-unit-switch"
-          label={temperatureUnit === "C" ? "°C" : "°F"}
-          checked={temperatureUnit === "F"}
-          onChange={handleTemperatureUnitChange}
+          label={unit ? "°C" : "°F"}
+          checked={!unit}
+          onChange={() => setUnit()}
         />
         <DropdownItem
           id="dark-mode-switch"
-          label={darkMode ? "Light Mode" : "Dark Mode"}
-          checked={darkMode}
-          onChange={handleDarkModeChange}
+          label={mode ? "Light Mode" : "Dark Mode"}
+          checked={mode}
+          onChange={() => setMode()}
         />
       </Dropdown.Menu>
     </Dropdown>

@@ -7,7 +7,7 @@ function LayoutNav() {
   return (
     <Navbar expand="sm" className="layoutNav bg-body-transparent">
       <Container fluid>
-        <Navbar.Brand href="/weather-app">
+        <Navbar.Brand as={Link} to="/weather-app">
           <div className="d-flex align-items-center">
             <Image
               alt="weather.io logo"

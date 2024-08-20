@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Container, Row, Toast, Spinner } from "react-bootstrap";
+import { useNavigate, useParams } from "react-router-dom";
+import { Container, Row, Col, Spinner } from "react-bootstrap";
 import Layout from "../layout/Layout";
 import Search from "../search/Search";
 import CurrentWeather from "../weatherDisplay/CurrentWeather";
@@ -7,24 +8,37 @@ import Forecast from "../weatherDisplay/Forecast";
 import FavoriteButton from "../utils/FavoriteButton";
 import MessageDisplay from "../utils/MessageDisplay";
 import useCurrentLocation from "../../hooks/useCurrentLocation";
-
+import ToastErr from "../utils/ToastErr";
 import "../../styles/HomePage.css";
 
+const ERR_MSG = "An error occurred while fetching location data";
+
 function HomePage() {
-  const [locationData, setLocationData] = useState(null);
-  const { currentLocation, currentLocationError, isLoading } =
+  const { currentLocation, currentLocationError, currentLocationLoading } =
     useCurrentLocation();
+  const [locationData, setLocationData] = useState(currentLocation || null);
   const [error, setError] = useState(null);
+  const { key, city, country } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (currentLocation) {
+    if (key && city && country) {
+      if (locationData && locationData.key === key) {
+        return;
+      }
+      setLocationData({ key, city, country });
+    }
+  }, [key, city, country]);
+
+  useEffect(() => {
+    if (currentLocation && !currentLocationError && !locationData) {
       setLocationData(currentLocation);
     }
   }, [currentLocation]);
 
   const handleLocationData = (location) => {
     if (!location || !location.key) return;
-    setLocationData(location);
+    navigate(`/weather/${location.key}/${location.city}/${location.country}`);
   };
 
   const handleFetchError = (error) => {
@@ -32,49 +46,7 @@ function HomePage() {
   };
 
   const weatherDisplay = locationData && locationData?.key;
-
-  const loadingUI = (
-    <Container className="loading">
-      <Spinner animation="grow" variant="primary" />
-      <Spinner animation="grow" variant="info" />
-      <Spinner animation="grow" variant="warning" />
-      <Spinner animation="grow" variant="light" />
-      <Spinner animation="grow" variant="secondary" />
-    </Container>
-  );
-
-  const displayWeather = (
-    <>
-      <CurrentWeather
-        locationData={locationData}
-        handleFetchError={handleFetchError}
-      />
-      <Forecast
-        locationData={locationData}
-        handleFetchError={handleFetchError}
-      />
-    </>
-  );
-
-  const noData = (
-    <MessageDisplay variant="info" className="no-data">
-      <p>
-        No data to display <br /> Please search for a location
-      </p>
-    </MessageDisplay>
-  );
-
-  const errorMessage = (
-    <MessageDisplay variant="error" className="error-message">
-      <p>{error}</p>
-    </MessageDisplay>
-  );
-
-  const currentLocationErrorUI = (
-    <Toast className="error-toast">
-      <Toast.Body>{currentLocationError}</Toast.Body>
-    </Toast>
-  );
+  console.log(weatherDisplay, locationData);
 
   return (
     <>
@@ -89,14 +61,48 @@ function HomePage() {
         )}
       </Layout>
       <Container fluid className="weather-display">
-        {isLoading ? (
-          loadingUI
+        {currentLocationLoading ? (
+          <Container className="loading">
+            <Spinner animation="grow" variant="primary" />
+            <Spinner animation="grow" variant="info" />
+            <Spinner animation="grow" variant="warning" />
+            <Spinner animation="grow" variant="light" />
+            <Spinner animation="grow" variant="secondary" />
+          </Container>
         ) : (
           <>
-            {weatherDisplay && displayWeather}
-            {!weatherDisplay && !error && noData}
-            {error && errorMessage}
-            {currentLocationError && currentLocationErrorUI}
+            {weatherDisplay && (
+              <Container fluid>
+                <Row className="weather-display">
+                  <Col xs={12} sm={12} lg={4} className="CurrentWeather">
+                    <CurrentWeather
+                      locationData={locationData}
+                      handleFetchError={handleFetchError}
+                    />
+                  </Col>
+                  <Col xs={12} sm={12} lg={8} className="Forecast">
+                    <Forecast
+                      locationData={locationData}
+                      handleFetchError={handleFetchError}
+                    />
+                  </Col>
+                </Row>
+              </Container>
+            )}
+            {!weatherDisplay && !error && (
+              <MessageDisplay variant="info" className="no-data">
+                <p>
+                  No data to display <br /> Please search for a location
+                </p>
+              </MessageDisplay>
+            )}
+            {(error || currentLocationError) && (
+              <ToastErr
+                message={
+                  error?.message || currentLocationError?.message || ERR_MSG
+                }
+              />
+            )}
           </>
         )}
       </Container>

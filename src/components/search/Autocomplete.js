@@ -11,8 +11,8 @@ function Autocomplete({ searchSuggestions, handleClickSuggestions }) {
             key={suggestion.key}
             onClick={() => handleClickSuggestions(suggestion)}
           >
-            <span className="city"> {suggestion.city}</span>
-            <span className="country"> {suggestion.country}</span>
+            <span className="suggest-city"> {suggestion.city}</span>
+            <span className="suggest-country"> {suggestion.country}</span>
           </Dropdown.Item>
         ))
       ) : (

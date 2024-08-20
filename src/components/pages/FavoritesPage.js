@@ -1,7 +1,6 @@
 import Layout from "../layout/Layout";
 import useFavorites from "../../hooks/useFavorites";
-import FavoriteButton from "../utils/FavoriteButton";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import "../../styles/FavoritesPage.css";
 import BasicWeather from "../weatherDisplay/BasicWeather";
 import MessageDisplay from "../utils/MessageDisplay";
@@ -11,12 +10,6 @@ function FavoritesPage() {
   const filterFavorites = Object.values(favorites).filter(
     (location) => location.display
   );
-
-  const searchWeather = (locationData) => {
-    // console.log("search", locationData);
-  };
-
-  // console.log(filterFavorites);
 
   return (
     <>

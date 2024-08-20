@@ -7,7 +7,7 @@ const useCurrentLocation = () => {
   const {
     data: currentLocation,
     error: currentLocationError,
-    isLoading,
+    isLoading: currentLocationLoading,
   } = useFetch(handler);
 
   const getCoords = () => {
@@ -34,7 +34,7 @@ const useCurrentLocation = () => {
         const coords = await getCoords();
         setHandler(weatherApi().getCityByCoords(coords));
       } catch (error) {
-        throw error;
+        // throw error;
       }
     };
 
@@ -44,7 +44,7 @@ const useCurrentLocation = () => {
   return {
     currentLocation,
     currentLocationError,
-    isLoading: !currentLocation && !currentLocationError ? true : false,
+    currentLocationLoading,
   };
 };
 

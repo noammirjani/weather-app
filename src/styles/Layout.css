@@ -8,7 +8,7 @@
 .card img {
   width: 100%;
   height: auto;
-  max-height: 40vh;
+  max-height: 30vh;
   object-fit: cover;
   object-position: center;
 }
@@ -17,4 +17,10 @@
   width: 100%;
   background: #ededf1a4 !important;
   /* padding: 1rem !important; */
+}
+
+.card-body.dark-mode {
+  width: 100%;
+  background: #393a3ebb !important;
+  color: whitesmoke;
 }

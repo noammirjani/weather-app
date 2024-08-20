@@ -44,8 +44,7 @@ export const extractForecastData = (responseData) => {
   return responseData.DailyForecasts.map(extract);
 };
 
-export const extractCurrentWeatherData = (responseData, unit = "metric") => {
-  const isMetric = unit === "metric";
+export const extractCurrentWeatherData = (responseData, isMetric) => {
   const data = responseData[0];
 
   return {

@@ -1,12 +1,16 @@
+import { useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
 import WeatherApiService from "../../services/weatherService";
 import useFetch from "../../hooks/useFetch";
 import FavoriteButton from "../utils/FavoriteButton";
-import { Button } from "react-bootstrap";
 import "../../styles/BasicWeather.css";
+import useSettings from "../../hooks/useSettings";
 
-function BasicWeather({ location, extra = false }) {
-  const handler = WeatherApiService().currentWeather(location.key);
+function BasicWeather({ location }) {
+  const { unit } = useSettings();
+  const handler = WeatherApiService().currentWeather(location.key, unit);
   const { data: currentData, isPending, error } = useFetch(handler);
+  const navigate = useNavigate();
 
   if (!currentData) {
     return;
@@ -23,16 +27,27 @@ function BasicWeather({ location, extra = false }) {
       </p>
       <p>{currentData.description}</p>
       <p>
-        Feels like: {Math.floor(currentData.feelsLike)} °{currentData.tempUnit}
+        Feels like: {Math.floor(currentData.feelsLike)}°{currentData.tempUnit}
       </p>
-      <img src={currentData.icon} alt="weather icon" />
-      <FavoriteButton locationData={location} display={true} />
-      <Button
-        variant="outline-primary"
-        // onClick={() => searchWeather(location.data)}
-      >
-        Search
-      </Button>
+      <img
+        src={currentData.icon}
+        alt="weather icon"
+        className="basic-weather-icon"
+      />
+      <div className="buttons-container">
+        <FavoriteButton locationData={location} display={true} />
+        <Button
+          className="search-button"
+          variant="outline-primary"
+          onClick={() =>
+            navigate(
+              `/weather/${location.key}/${location.city}/${location.country}`
+            )
+          }
+        >
+          Search
+        </Button>
+      </div>
     </div>
   );
 }

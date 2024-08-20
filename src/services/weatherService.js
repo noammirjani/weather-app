@@ -19,19 +19,19 @@ function WeatherApiService() {
 
   const isValidUrl = (...args) => args.every(Boolean);
 
-  const currentWeather = (locationKey, metric = true) => {
-    const url = `${currentWeatherUrl}${locationKey}?apikey=${weatherApiKey}&details=true&metric=${metric}`;
+  const currentWeather = (locationKey, unit = true, details = true) => {
+    const url = `${currentWeatherUrl}${locationKey}?apikey=${weatherApiKey}&details=${details}&metric=${unit}`;
     return {
       url: url,
       queryType: "current-weather",
       queryKey: url,
       urlValidation: isValidUrl(locationKey, weatherApiKey),
-      dataHandler: extractCurrentWeatherData,
+      dataHandler: (data) => extractCurrentWeatherData(data, unit),
     };
   };
 
-  const forecast = (locationKey, metric = true) => {
-    const url = `${forecastUrl}${locationKey}?apikey=${weatherApiKey}&details=true&metric=${metric}`;
+  const forecast = (locationKey, unit = true) => {
+    const url = `${forecastUrl}${locationKey}?apikey=${weatherApiKey}&details=true&metric=${unit}`;
     return {
       url: url,
       queryType: "forecast-5days",
@@ -75,13 +75,3 @@ function WeatherApiService() {
 }
 
 export default WeatherApiService;
-
-//e
-// :
-// "400"
-// Message
-// :
-// "LocationKey is invalid: 57465$"
-// Reference
-// :
-// "/forecasts/v1/daily/5day/57465$"
