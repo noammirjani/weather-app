@@ -1,6 +1,6 @@
 # 🌦 Weather Application
 
-**<span style="color:blue;">Test the website:** link!!!!! </span>
+**<span style="color:blue;">Test the website:** link </span>
 
 <span style="color:green;">_Note: The public API key included in this project allows for 50 searches per day. If you require more usage or want to test the project without limitations, you can create your own API key, install the project locally, and continue testing as needed._
 </span>
