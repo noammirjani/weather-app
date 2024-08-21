@@ -1,35 +1,28 @@
 import { debounce } from "lodash";
-import WeatherApi from "../services/weatherService";
+import WeatherApiService from "../services/weatherService";
 import { useEffect, useState } from "react";
+import useFetch from "./useFetch";
 
 function useDebounce(value, delay) {
-  const [citiesSearch, setCitiesSearch] = useState([]);
+  const [handler, setHandler] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await WeatherApi().fetchAutoCompleteLocation(value);
-        setCitiesSearch(response);
-      } catch (e) {
-        throw e;
+    const fetchCities = debounce(() => {
+      if (value) {
+        setHandler(WeatherApiService().autoCompleteLocation(value));
       }
-    };
-
-    //debounce the fetchData function
-    const handler = debounce(() => {
-      fetchData();
     }, delay);
 
-    //execute
-    handler();
+    fetchCities();
 
-    //clean up
     return () => {
-      handler.cancel();
+      fetchCities.cancel();
     };
-  }, [value]);
+  }, [value, delay]);
 
-  return citiesSearch;
+  const { data: searchSuggestions, isLoading, error } = useFetch(handler || {});
+
+  return { searchSuggestions, isLoading, error };
 }
 
 export default useDebounce;

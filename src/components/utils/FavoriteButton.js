@@ -1,24 +1,22 @@
-import { useState } from "react";
 import { Button } from "react-bootstrap";
 import Icon from "../utils/Icon";
 import { favoriteSvg, favoriteSvgFill } from "../../utils/svgPath";
 import "../../styles/FavoriteButton.css";
+import useFavorites from "../../hooks/useFavorites";
 
 function FavoriteButton({ locationData }) {
-  const [saveLocation, setSaveLocation] = useState(false);
+  const { updateFavorites, isFave } = useFavorites();
 
   const handleSave = () => {
-    setSaveLocation((prev) => !prev);
-    //set location data to context
+    updateFavorites(locationData, !isFave(locationData.key));
   };
 
   return (
     <Button onClick={handleSave} className="svgButton">
       <Icon
         size="30"
-        svgData={saveLocation ? favoriteSvgFill : favoriteSvg}
+        svgData={isFave(locationData.key) ? favoriteSvgFill : favoriteSvg}
         color="red"
-        onClick={handleSave}
       />
     </Button>
   );

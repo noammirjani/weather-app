@@ -1,19 +1,26 @@
-import { useState, useEffect } from "react";
 import { Container, Row, Col, Image } from "react-bootstrap";
-import WeatherApi from "../../services/weatherService";
+import WeatherApiService from "../../services/weatherService";
+import useFetch from "../../hooks/useFetch";
+import useSettings from "../../hooks/useSettings";
+import { colorByWeather } from "../../utils/colorWeather";
 import "../../styles/Forecast.css";
 
-function Forecast({ locationData }) {
-  const [forecast, setForecast] = useState(null);
+function Forecast({ locationData, handleFetchError }) {
+  const { unit, mode: darkMode } = useSettings();
+  const handler = WeatherApiService().forecast(locationData.key, unit);
+  const { data: forecast, error } = useFetch(handler);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!locationData.key) return;
-      const data = await WeatherApi().fetchForecast(locationData.key);
-      setForecast(data);
-    };
-    fetchData();
-  }, [locationData.key]);
+  if (!forecast || !locationData || !locationData.key) {
+    return;
+  }
+  if (!forecast) {
+    handleFetchError("No forecast data found");
+    return;
+  }
+  if (error) {
+    handleFetchError(error);
+    return;
+  }
 
   const dayName = (dateString) => {
     const days = [
@@ -29,30 +36,29 @@ function Forecast({ locationData }) {
     return days[d.getDay()].substring(0, 3);
   };
 
-  const createCard = (day) => {
-    return (
-      <Col key={day.date} className="weather-col">
-        <div className="weather-temperature">
-          {day.maxTemp} {day.unit}°
-        </div>
-        <div className="thermometer"></div>
-        <div className="weather-temperature">
-          {day.minTemp} {day.unit}°
-        </div>
-        <div className="weather-description">{day.description}</div>
-        <Image src={day.icon} alt="Sunny" className="weather-icon" />
-        <div className="weather-date-name">{dayName(day.date)}</div>
-        <div className="weather-date">{day.date.split("-")[2]}</div>
-      </Col>
-    );
-  };
-
-  if (!forecast) {
-    return <div>Loading...</div>;
-  }
+  const createCard = (day) => (
+    <Col key={day.date} className="weather-col">
+      <div className="weather-temperature">
+        {day.maxTemp}°{day.unit}
+      </div>
+      <div className="thermometer"></div>
+      <div className="weather-temperature">
+        {day.minTemp} {day.unit}°
+      </div>
+      <div className="weather-description">{day.description}</div>
+      <Image src={day.icon} alt="Sunny" className="forecast-weather-icon" />
+      <div className="weather-date-name">{dayName(day.date)}</div>
+      <div className="weather-date">{day.date.split("-")[2]}</div>
+    </Col>
+  );
 
   return (
-    <Container className="mt-5 mb-5 p-5 forecast-body ">
+    <Container
+      fluid
+      className={`${darkMode ? "dark-mode" : ""} forecast-body ${colorByWeather(
+        forecast.description
+      )}`}
+    >
       <Row className="horizontal-scroll">
         {forecast && forecast.map((day) => createCard(day))}
         {/* {!forecast && <div>No forecast data</div>} */}

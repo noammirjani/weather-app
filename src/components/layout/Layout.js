@@ -1,14 +1,28 @@
 import "../../styles/Layout.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Card } from "react-bootstrap";
+import { Card, Container } from "react-bootstrap";
+import LayoutNav from "./LayoutNav";
+import useSettings from "../../hooks/useSettings";
 
-//todo: add button to switch between C and F
-//todo: add search history /favorite list
 function Layout({ children }) {
+  const { mode: darkMode } = useSettings();
+
   return (
     <Card>
-      <Card.Img variant="top" src="assets/images/clouds.jpg" />
-      <Card.Body>{children}</Card.Body>
+      <Card.Img
+        variant="top"
+        src={
+          darkMode
+            ? "/assets/images/clouds-dark.jpg"
+            : "/assets/images/clouds.jpg"
+        }
+      />
+      <Card.Body className={darkMode ? "dark-mode" : ""}>
+        <Container className="">
+          <LayoutNav />
+          {children}
+        </Container>
+      </Card.Body>
     </Card>
   );
 }

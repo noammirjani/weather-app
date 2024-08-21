@@ -1,15 +1,11 @@
-import axios from "axios";
 import {
   extractCurrentWeatherData,
   extractForecastData,
-  extractData,
+  extractLocationData,
+  extractGeoPositionData,
 } from "../utils/weatherDataParser";
 
-//todo: change folder name to services
-//todo: change file name to weatherApi.js
-//todo: handle errors correctly
-//todo: add costume hook for fetching data
-function weatherApi() {
+function WeatherApiService() {
   const weatherApiKey = process.env.REACT_APP_WEATHER_API_KEY;
 
   const currentWeatherUrl =
@@ -17,74 +13,65 @@ function weatherApi() {
   const forecastUrl =
     "http://dataservice.accuweather.com/forecasts/v1/daily/5day/";
   const locationUrl =
-    "http://dataservice.accuweather.com/locations/v1/cities/autocomplete?";
+    "http://dataservice.accuweather.com/locations/v1/cities/autocomplete";
+  const geoPositionUrl =
+    "http://dataservice.accuweather.com/locations/v1/cities/geoposition/search";
 
-  const fetchCurrentWeather = async (locationKey, metric = true) => {
-    const addToUrl = `?apikey=${weatherApiKey}&details=true&metric=${metric}`;
+  const isValidUrl = (...args) => args.every(Boolean);
 
-    try {
-      const response = await axios.get(
-        `${currentWeatherUrl}${locationKey}${addToUrl}`
-      );
-
-      if (response?.data?.length > 0) {
-        return extractCurrentWeatherData(response.data[0]);
-      }
-
-      console.error("no data");
-      return null;
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
+  const currentWeather = (locationKey, unit = true, details = true) => {
+    const url = `${currentWeatherUrl}${locationKey}?apikey=${weatherApiKey}&details=${details}&metric=${unit}`;
+    return {
+      url: url,
+      queryType: "current-weather",
+      queryKey: url,
+      urlValidation: isValidUrl(locationKey, weatherApiKey),
+      dataHandler: (data) => extractCurrentWeatherData(data, unit),
+    };
   };
 
-  const fetchForecast = async (locationKey, metric = true) => {
-    const addToUrl = `?apikey=${weatherApiKey}&metric=${metric}&details=false`;
-
-    try {
-      const response = await axios.get(
-        `${forecastUrl}${locationKey}${addToUrl}`
-      );
-
-      if (response?.data?.DailyForecasts) {
-        return response.data.DailyForecasts.map((day) =>
-          extractForecastData(day)
-        );
-      } else {
-        console.error("no data");
-        return null;
-      }
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
+  const forecast = (locationKey, unit = true) => {
+    const url = `${forecastUrl}${locationKey}?apikey=${weatherApiKey}&details=true&metric=${unit}`;
+    return {
+      url: url,
+      queryType: "forecast-5days",
+      queryKey: url,
+      urlValidation: isValidUrl(locationKey, weatherApiKey),
+      dataHandler: extractForecastData,
+    };
   };
 
-  const fetchAutoCompleteLocation = async (city) => {
-    const url = `${locationUrl}q=${city}&apikey=${weatherApiKey}`;
+  const autoCompleteLocation = (city) => {
+    return {
+      url: `${locationUrl}?apikey=${weatherApiKey}&q=${city}`,
+      queryType: "auto-complete-location",
+      queryKey: city,
+      urlValidation: isValidUrl(city, weatherApiKey),
+      dataHandler: extractLocationData,
+    };
+  };
 
-    if (!city) return null;
-
-    try {
-      const response = await axios.get(url);
-      if (response?.data?.length > 0) {
-        return extractData(response.data);
-      } else {
-        return null;
-      }
-    } catch (e) {
-      console.error(e);
-      return null;
-      // throw e;
-    }
+  const getCityByCoords = (coords) => {
+    return {
+      url: `${geoPositionUrl}?apikey=${weatherApiKey}&q=${coords.latitude},${coords.longitude}`,
+      queryType: "geo-position-search",
+      queryKey: "geo-position-search",
+      urlValidation: isValidUrl(
+        coords,
+        coords.latitude,
+        coords.longitude,
+        weatherApiKey
+      ),
+      dataHandler: extractGeoPositionData,
+    };
   };
 
   return {
-    fetchAutoCompleteLocation,
-    fetchForecast,
-    fetchCurrentWeather,
+    autoCompleteLocation,
+    forecast,
+    currentWeather,
+    getCityByCoords,
   };
 }
 
-export default weatherApi;
+export default WeatherApiService;

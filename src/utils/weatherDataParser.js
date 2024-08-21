@@ -1,6 +1,32 @@
 const iconUrlBase = "https://developer.accuweather.com/sites/default/files";
-export const extractForecastData = (dayData) => {
+
+export const extractGeoPositionData = (responseData) => {
+  const data = responseData;
+
+  const correctCountry =
+    data.Country.LocalizedName === "Palestine"
+      ? "Israel"
+      : data.Country.LocalizedName;
+
   return {
+    key: data.Key,
+    city: data.ParentCity.LocalizedName || data.LocalizedName,
+    country: correctCountry,
+  };
+};
+
+export const extractLocationData = (responseData) => {
+  const extract = (item) => ({
+    key: item.Key,
+    city: item.LocalizedName,
+    country: item.Country.LocalizedName,
+  });
+
+  return responseData.map(extract);
+};
+
+export const extractForecastData = (responseData) => {
+  const extract = (dayData) => ({
     date: dayData.Date.split("T")[0],
     minTemp: Math.floor(dayData.Temperature.Minimum.Value),
     maxTemp: Math.floor(dayData.Temperature.Maximum.Value),
@@ -9,11 +35,17 @@ export const extractForecastData = (dayData) => {
     icon: `${iconUrlBase}/${dayData.Day.Icon < 10 ? "0" : ""}${
       dayData.Day.Icon
     }-s.png`,
-  };
+  });
+
+  if (!responseData?.DailyForecasts) {
+    throw new Error("Forecast response broken, missing data!");
+  }
+
+  return responseData.DailyForecasts.map(extract);
 };
 
-export const extractCurrentWeatherData = (data, unit = "metric") => {
-  const isMetric = unit === "metric";
+export const extractCurrentWeatherData = (responseData, isMetric) => {
+  const data = responseData[0];
 
   return {
     temp: isMetric
@@ -45,12 +77,4 @@ export const extractCurrentWeatherData = (data, unit = "metric") => {
     localTime: data.LocalObservationDateTime.split("T")[0],
     isDayTime: data.IsDayTime,
   };
-};
-
-export const extractData = (data) => {
-  return data.map((item) => ({
-    key: item.Key,
-    city: item.LocalizedName,
-    country: item.Country.LocalizedName,
-  }));
 };

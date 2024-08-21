@@ -26,12 +26,12 @@
   display: block;
 }
 
-.city {
+.suggest-city {
   color: rgb(0, 0, 0);
   font-size: small;
 }
 
-.country {
+.suggest-country {
   color: rgb(168, 166, 166);
   font-size: smaller;
 }
